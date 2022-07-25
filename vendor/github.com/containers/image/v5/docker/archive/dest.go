@@ -2,11 +2,12 @@ package archive
 
 import (
 	"context"
+	"fmt"
 	"io"
 
 	"github.com/containers/image/v5/docker/internal/tarfile"
+	"github.com/containers/image/v5/internal/private"
 	"github.com/containers/image/v5/types"
-	"github.com/pkg/errors"
 )
 
 type archiveImageDestination struct {
@@ -16,9 +17,9 @@ type archiveImageDestination struct {
 	writer               io.Closer       // May be nil if the archive is shared
 }
 
-func newImageDestination(sys *types.SystemContext, ref archiveReference) (types.ImageDestination, error) {
+func newImageDestination(sys *types.SystemContext, ref archiveReference) (private.ImageDestination, error) {
 	if ref.sourceIndex != -1 {
-		return nil, errors.Errorf("Destination reference must not contain a manifest index @%d", ref.sourceIndex)
+		return nil, fmt.Errorf("Destination reference must not contain a manifest index @%d", ref.sourceIndex)
 	}
 
 	var archive *tarfile.Writer
@@ -35,7 +36,7 @@ func newImageDestination(sys *types.SystemContext, ref archiveReference) (types.
 		archive = tarfile.NewWriter(fh)
 		writer = fh
 	}
-	tarDest := tarfile.NewDestination(sys, archive, ref.ref)
+	tarDest := tarfile.NewDestination(sys, archive, ref.Transport().Name(), ref.ref)
 	if sys != nil && sys.DockerArchiveAdditionalTags != nil {
 		tarDest.AddRepoTags(sys.DockerArchiveAdditionalTags)
 	}
@@ -45,11 +46,6 @@ func newImageDestination(sys *types.SystemContext, ref archiveReference) (types.
 		archive:     archive,
 		writer:      writer,
 	}, nil
-}
-
-// DesiredLayerCompression indicates if layers must be compressed, decompressed or preserved
-func (d *archiveImageDestination) DesiredLayerCompression() types.LayerCompression {
-	return types.Decompress
 }
 
 // Reference returns the reference used to set up this destination.  Note that this should directly correspond to user's intent,
@@ -67,6 +63,9 @@ func (d *archiveImageDestination) Close() error {
 }
 
 // Commit marks the process of storing the image as successful and asks for the image to be persisted.
+// unparsedToplevel contains data about the top-level manifest of the source (which may be a single-arch image or a manifest list
+// if PutManifest was only called for the single-arch image with instanceDigest == nil), primarily to allow lookups by the
+// original manifest list digest, if desired.
 // WARNING: This does not have any transactional semantics:
 // - Uploaded data MAY be visible to others before Commit() is called
 // - Uploaded data MAY be removed or MAY remain around if Close() is called without Commit() (i.e. rollback is allowed but not guaranteed)
