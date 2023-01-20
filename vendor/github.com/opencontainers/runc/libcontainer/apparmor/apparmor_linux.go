@@ -3,7 +3,6 @@ package apparmor
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"sync"
 
@@ -15,11 +14,11 @@ var (
 	checkAppArmor   sync.Once
 )
 
-// IsEnabled returns true if apparmor is enabled for the host.
-func IsEnabled() bool {
+// isEnabled returns true if apparmor is enabled for the host.
+func isEnabled() bool {
 	checkAppArmor.Do(func() {
 		if _, err := os.Stat("/sys/kernel/security/apparmor"); err == nil {
-			buf, err := ioutil.ReadFile("/sys/module/apparmor/parameters/enabled")
+			buf, err := os.ReadFile("/sys/module/apparmor/parameters/enabled")
 			appArmorEnabled = err == nil && len(buf) > 1 && buf[0] == 'Y'
 		}
 	})
@@ -52,14 +51,15 @@ func setProcAttr(attr, value string) error {
 // changeOnExec reimplements aa_change_onexec from libapparmor in Go
 func changeOnExec(name string) error {
 	if err := setProcAttr("exec", "exec "+name); err != nil {
-		return fmt.Errorf("apparmor failed to apply profile: %s", err)
+		return fmt.Errorf("apparmor failed to apply profile: %w", err)
 	}
 	return nil
 }
 
-// ApplyProfile will apply the profile with the specified name to the process after
-// the next exec.
-func ApplyProfile(name string) error {
+// applyProfile will apply the profile with the specified name to the process after
+// the next exec. It is only supported on Linux and produces an error on other
+// platforms.
+func applyProfile(name string) error {
 	if name == "" {
 		return nil
 	}
