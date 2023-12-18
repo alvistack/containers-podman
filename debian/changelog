@@ -1,0 +1,5 @@
+podman (100:4.8.0-1) UNRELEASED; urgency=medium
+
+  * https://github.com/containers/podman/releases/tag/v4.8.0
+
+ -- Wong Hoi Sing Edison <hswong3i@pantarei-design.com>  Tue, 28 Nov 2023 10:54:54 +0800

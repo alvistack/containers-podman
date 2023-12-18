@@ -1,0 +1,60 @@
+Source: podman
+Section: devel
+Priority: optional
+Standards-Version: 4.5.0
+Maintainer: Wong Hoi Sing Edison <hswong3i@gmail.com>
+Homepage: https://github.com/containers/podman/tags
+Vcs-Browser: https://github.com/alvistack/podman
+Vcs-Git: https://github.com/alvistack/podman.git
+Build-Depends:
+ debhelper,
+ debhelper-compat (= 10),
+ golang-1.21,
+ libapparmor-dev,
+ libassuan-dev,
+ libglib2.0-dev,
+ libgpg-error-dev,
+ libgpgme-dev,
+ libseccomp-dev,
+ libsystemd-dev,
+ tzdata,
+
+Package: podman
+Architecture: amd64
+Description: Daemon-less container engine for managing containers, pods and images
+ Podman is a container engine for managing pods, containers, and
+ container images. It is a standalone tool and it directly manipulates
+ containers without the need of a container engine daemon. Podman is able
+ to interact with container images create in buildah, cri-o, and skopeo,
+ as they all share the same datastore backend.
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+ catatonit,
+ conmon,
+ containernetworking-plugins,
+ containers-common,
+ iptables,
+ oci-runtime,
+ tzdata,
+
+Package: podman-docker
+Architecture: amd64
+Description: Emulate Docker CLI using podman
+ This package installs a script named docker that emulates the Docker CLI
+ by executes podman commands, it also creates links between all Docker
+ CLI man pages and podman.
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+ podman (= ${source:Version}),
+Conflicts:
+ docker,
+ docker-ce,
+ docker-ce-cli,
+ docker-ee,
+ docker-ee-cli,
+ docker-latest,
+ docker.io,
+ moby-cli,
+ moby-engine,
