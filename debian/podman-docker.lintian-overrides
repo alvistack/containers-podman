@@ -1,0 +1,4 @@
+podman-docker: copyright-without-copyright-notice
+podman-docker: initial-upload-closes-no-bugs
+podman-docker: no-manual-page
+podman-docker: zero-byte-file-in-doc-directory
