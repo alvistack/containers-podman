@@ -1,0 +1,7 @@
+*.substvars
+*debhelper*
+.debhelper
+files
+podman
+podman-docker
+tmp
