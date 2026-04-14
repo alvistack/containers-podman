@@ -1,0 +1,6 @@
+podman: copyright-without-copyright-notice
+podman: hardening-no-pie
+podman: initial-upload-closes-no-bugs
+podman: no-manual-page
+podman: statically-linked-binary
+podman: zero-byte-file-in-doc-directory
