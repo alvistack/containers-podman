@@ -1,0 +1,12 @@
+etc/profile.d/*
+lib/systemd/system/*
+lib/systemd/user/*
+usr/bin/podman
+usr/bin/podman-remote
+usr/lib/systemd/system-generators/*
+usr/lib/systemd/user-generators/*
+usr/libexec/podman/quadlet
+usr/libexec/podman/rootlessport
+usr/share/bash-completion/completions/*
+usr/share/fish/vendor_completions.d/*
+usr/share/zsh/site-functions/*
