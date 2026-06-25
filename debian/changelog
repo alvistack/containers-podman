@@ -1,0 +1,5 @@
+podman (100:6.0.0-1) UNRELEASED; urgency=medium
+
+  * https://github.com/containers/podman/releases/tag/v6.0.0
+
+ -- Wong Hoi Sing Edison <hswong3i@pantarei-design.com>  Thu, 25 Jun 2026 09:58:00 +0800
